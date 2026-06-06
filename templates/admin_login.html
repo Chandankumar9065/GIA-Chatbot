@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - GIA</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 18% 18%, rgba(36, 99, 235, 0.18), transparent 28rem),
+                linear-gradient(135deg, #f7faff 0%, #e8eef8 100%);
+            color: #132238;
+            display: grid;
+            place-items: center;
+            font-family: Inter, "Segoe UI", Arial, sans-serif;
+            padding: 24px;
+        }
+
+        .login-card {
+            width: min(440px, 100%);
+            background: #fff;
+            border: 1px solid #dbe4f0;
+            border-radius: 8px;
+            box-shadow: 0 24px 70px rgba(16, 29, 52, 0.16);
+            overflow: hidden;
+        }
+
+        .login-header {
+            background: #101d34;
+            color: #fff;
+            padding: 24px;
+        }
+
+        .login-header h1 {
+            font-size: 28px;
+            margin-bottom: 6px;
+        }
+
+        .login-header p {
+            color: rgba(255, 255, 255, 0.72);
+        }
+
+        form {
+            display: grid;
+            gap: 16px;
+            padding: 24px;
+        }
+
+        label {
+            color: #27364d;
+            display: block;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            min-height: 52px;
+            border: 1px solid #dbe4f0;
+            border-radius: 8px;
+            color: #132238;
+            font-size: 16px;
+            outline: none;
+            padding: 0 14px;
+        }
+
+        input:focus {
+            border-color: #2463eb;
+            box-shadow: 0 0 0 4px rgba(36, 99, 235, 0.12);
+        }
+
+        button,
+        a {
+            border: 0;
+            border-radius: 8px;
+            background: #2463eb;
+            color: #fff;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 52px;
+            padding: 0 16px;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .back-link {
+            background: transparent;
+            color: #2463eb;
+            min-height: auto;
+            padding: 0;
+        }
+
+        .error {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            color: #991b1b;
+            font-size: 14px;
+            font-weight: 700;
+            padding: 12px;
+        }
+    </style>
+</head>
+<body>
+    <main class="login-card">
+        <div class="login-header">
+            <h1>Admin Login</h1>
+            <p>Sign in to manage GIA dashboard and Q&A data.</p>
+        </div>
+
+        <form method="post">
+            {% if error %}
+                <div class="error">{{ error }}</div>
+            {% endif %}
+
+            <div>
+                <label for="username">User ID</label>
+                <input id="username" name="username" autocomplete="username" required>
+            </div>
+
+            <div>
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" autocomplete="current-password" required>
+            </div>
+
+            <button type="submit">Login</button>
+            <a class="back-link" href="/">Back to Chatbot</a>
+        </form>
+    </main>
+</body>
+</html>

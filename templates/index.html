@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GIA - Galgotias Intelligent Assistant</title>
+
+    <style>
+        :root {
+            --bg: #eef3fb;
+            --ink: #132238;
+            --muted: #68758a;
+            --line: #dbe4f0;
+            --panel: #ffffff;
+            --navy: #101d34;
+            --navy-soft: #182a49;
+            --blue: #2463eb;
+            --blue-dark: #1d4ed8;
+            --red: #d9232e;
+            --gold: #f5b51b;
+            --cyan: #08a8de;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 15% 15%, rgba(36, 99, 235, 0.18), transparent 28rem),
+                radial-gradient(circle at 86% 12%, rgba(245, 181, 27, 0.16), transparent 26rem),
+                linear-gradient(135deg, #f7faff 0%, #e8eef8 100%);
+            color: var(--ink);
+            display: grid;
+            place-items: center;
+            font-family: Inter, "Segoe UI", Arial, sans-serif;
+            padding: 24px;
+        }
+
+        .shell {
+            width: min(1100px, 100%);
+        }
+
+        .welcome-screen,
+        .chat-app {
+            min-height: min(760px, calc(100vh - 48px));
+            border: 1px solid rgba(219, 228, 240, 0.95);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.86);
+            box-shadow: 0 24px 70px rgba(16, 29, 52, 0.18);
+            overflow: hidden;
+        }
+
+        .welcome-screen {
+            display: grid;
+            grid-template-columns: minmax(0, 1.05fr) minmax(340px, 0.95fr);
+        }
+
+        .brand-panel {
+            background:
+                linear-gradient(rgba(16, 29, 52, 0.88), rgba(16, 29, 52, 0.92)),
+                url("/static/logo.png") center 64% / 360px auto no-repeat;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 42px;
+            min-height: 100%;
+        }
+
+        .brand-top,
+        .chat-brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .logo-mark {
+            width: 58px;
+            height: 58px;
+            border-radius: 8px;
+            background: #fff;
+            display: grid;
+            place-items: center;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+            flex: 0 0 auto;
+        }
+
+        .logo-mark img {
+            width: 48px;
+            height: auto;
+            display: block;
+        }
+
+        .brand-name {
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.74);
+            letter-spacing: 0;
+        }
+
+        .brand-copy {
+            max-width: 540px;
+            padding: 80px 0 48px;
+        }
+
+        .brand-copy h1 {
+            font-size: clamp(40px, 6vw, 66px);
+            line-height: 1;
+            color: #fff;
+            margin-bottom: 18px;
+        }
+
+        .brand-copy p {
+            color: rgba(255, 255, 255, 0.78);
+            font-size: 18px;
+            line-height: 1.6;
+            max-width: 470px;
+        }
+
+        .quick-topics {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 28px;
+        }
+
+        .topic-pill {
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 999px;
+            color: rgba(255, 255, 255, 0.86);
+            padding: 8px 12px;
+            font-size: 13px;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .brand-foot {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+
+        .stat {
+            border-top: 2px solid rgba(255, 255, 255, 0.16);
+            padding-top: 14px;
+        }
+
+        .stat strong {
+            display: block;
+            font-size: 22px;
+            margin-bottom: 4px;
+        }
+
+        .stat span {
+            color: rgba(255, 255, 255, 0.68);
+            font-size: 13px;
+        }
+
+        .form-panel {
+            display: flex;
+            align-items: center;
+            padding: 42px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(247, 250, 255, 0.96));
+        }
+
+        .form-card {
+            width: 100%;
+        }
+
+        .eyebrow {
+            color: var(--blue);
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .form-card h2 {
+            font-size: clamp(30px, 4vw, 42px);
+            line-height: 1.1;
+            margin-bottom: 12px;
+        }
+
+        .form-card p {
+            color: var(--muted);
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .field {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 700;
+            color: #27364d;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            min-height: 54px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: #fff;
+            color: var(--ink);
+            font-size: 16px;
+            outline: none;
+            padding: 0 16px;
+            transition: border-color 160ms ease, box-shadow 160ms ease;
+        }
+
+        input:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 4px rgba(36, 99, 235, 0.12);
+        }
+
+        button {
+            border: 0;
+            border-radius: 8px;
+            background: var(--blue);
+            color: #fff;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 700;
+            min-height: 54px;
+            padding: 0 20px;
+            transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+        }
+
+        button:hover {
+            background: var(--blue-dark);
+            box-shadow: 0 14px 28px rgba(36, 99, 235, 0.28);
+            transform: translateY(-1px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .primary-btn {
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        .trust-note {
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 18px;
+            line-height: 1.5;
+        }
+
+        .admin-shortcut {
+            color: var(--blue);
+            display: inline-flex;
+            font-size: 14px;
+            font-weight: 700;
+            margin-top: 12px;
+            text-decoration: none;
+        }
+
+        .admin-shortcut:hover {
+            color: var(--blue-dark);
+        }
+
+        .chat-app {
+            display: none;
+            grid-template-rows: auto minmax(0, 1fr) auto;
+            background: #f8fbff;
+        }
+
+        .chat-header {
+            background: var(--navy);
+            color: #fff;
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .chat-title h1 {
+            color: #fff;
+            font-size: 28px;
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+
+        .tagline {
+            color: rgba(255, 255, 255, 0.68);
+            font-size: 14px;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255, 255, 255, 0.76);
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .status-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 0 5px rgba(34, 197, 94, 0.14);
+        }
+
+        .chat-actions {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .clear-btn {
+            min-height: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            font-size: 14px;
+            padding: 0 14px;
+        }
+
+        .clear-btn:hover {
+            background: rgba(255, 255, 255, 0.16);
+            box-shadow: none;
+        }
+
+        .admin-chat-link {
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: #fff;
+            display: inline-flex;
+            font-size: 14px;
+            font-weight: 700;
+            min-height: 40px;
+            padding: 0 14px;
+            text-decoration: none;
+        }
+
+        .admin-chat-link:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        #chatbox {
+            min-height: 0;
+            overflow-y: auto;
+            padding: 24px;
+            background:
+                linear-gradient(rgba(248, 251, 255, 0.92), rgba(248, 251, 255, 0.92)),
+                linear-gradient(90deg, rgba(36, 99, 235, 0.08) 1px, transparent 1px),
+                linear-gradient(rgba(36, 99, 235, 0.06) 1px, transparent 1px);
+            background-size: auto, 44px 44px, 44px 44px;
+        }
+
+        .message-row {
+            display: flex;
+            margin: 12px 0;
+        }
+
+        .message-row.user {
+            justify-content: flex-end;
+        }
+
+        .message {
+            max-width: min(680px, 78%);
+            border-radius: 8px;
+            padding: 14px 16px;
+            line-height: 1.55;
+            word-wrap: break-word;
+            box-shadow: 0 10px 24px rgba(16, 29, 52, 0.08);
+        }
+
+        .bot-message {
+            background: #fff;
+            color: var(--ink);
+            border: 1px solid var(--line);
+        }
+
+        .user-message {
+            background: var(--blue);
+            color: #fff;
+        }
+
+        .typing-message {
+            overflow: hidden;
+            position: relative;
+        }
+
+        .welcome-message h2 {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        .suggestion {
+            border: 1px solid #d7e2f3;
+            border-radius: 999px;
+            background: #f4f8ff;
+            color: #244264;
+            font-size: 13px;
+            padding: 8px 10px;
+            cursor: pointer;
+        }
+
+        .suggestion:hover {
+            border-color: var(--blue);
+            color: var(--blue-dark);
+        }
+
+        .composer {
+            display: flex;
+            gap: 12px;
+            padding: 18px 24px 24px;
+            background: #fff;
+            border-top: 1px solid var(--line);
+        }
+
+        .composer input {
+            min-height: 56px;
+        }
+
+        .send-btn {
+            min-width: 112px;
+        }
+
+        .typing {
+            align-items: center;
+            color: var(--muted);
+            display: flex;
+            gap: 10px;
+            min-height: 28px;
+            position: relative;
+        }
+
+        .typing-label {
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .typing-dots {
+            align-items: center;
+            display: inline-flex;
+            gap: 6px;
+        }
+
+        .typing-dot {
+            animation: typingPulse 1.35s ease-in-out infinite;
+            background: linear-gradient(135deg, var(--blue), #08a8de);
+            border-radius: 50%;
+            height: 8px;
+            width: 8px;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.18s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.36s;
+        }
+
+        .typing-shimmer {
+            animation: shimmer 1.8s linear infinite;
+            background: linear-gradient(90deg, transparent, rgba(36, 99, 235, 0.12), transparent);
+            bottom: 0;
+            left: -30%;
+            pointer-events: none;
+            position: absolute;
+            top: 0;
+            width: 30%;
+        }
+
+        @keyframes typingPulse {
+            0%, 70%, 100% {
+                opacity: 0.35;
+                transform: translateY(0) scale(0.82);
+            }
+
+            35% {
+                opacity: 1;
+                transform: translateY(-6px) scale(1);
+            }
+        }
+
+        @keyframes shimmer {
+            from {
+                left: -30%;
+            }
+
+            to {
+                left: 110%;
+            }
+        }
+
+        @media (max-width: 860px) {
+            body {
+                padding: 14px;
+            }
+
+            .welcome-screen {
+                grid-template-columns: 1fr;
+            }
+
+            .brand-panel {
+                min-height: 420px;
+                padding: 28px;
+                background:
+                    linear-gradient(rgba(16, 29, 52, 0.9), rgba(16, 29, 52, 0.94)),
+                    url("/static/logo.png") center 62% / 260px auto no-repeat;
+            }
+
+            .brand-copy {
+                padding: 44px 0 24px;
+            }
+
+            .brand-foot {
+                grid-template-columns: 1fr;
+            }
+
+            .form-panel {
+                padding: 28px;
+            }
+
+            .chat-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .chat-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .message {
+                max-width: 92%;
+            }
+
+            .composer {
+                padding: 14px;
+                gap: 8px;
+            }
+
+            .send-btn {
+                min-width: 84px;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .welcome-screen,
+            .chat-app {
+                min-height: calc(100vh - 28px);
+            }
+
+            .brand-panel {
+                min-height: 360px;
+            }
+
+            .brand-copy h1 {
+                font-size: 38px;
+            }
+
+            .logo-mark {
+                width: 50px;
+                height: 50px;
+            }
+
+            .logo-mark img {
+                width: 42px;
+            }
+
+            .composer {
+                flex-direction: column;
+            }
+
+            .send-btn {
+                width: 100%;
+            }
+        }
+        .developer-credit{
+                position: absolute;
+                bottom: 35px;
+                 margin-top:15px;
+                 text-align:center;
+                 font-size:13px;
+                 color:rgba(255,255,255,0.60);
+                 font-weight:400;
+                 white-space:nowrap;
+                 letter-spacing: 0.5px;
+            }
+    </style>
+</head>
+
+<body>
+    <main class="shell">
+        <section class="welcome-screen" id="userForm">
+            <div class="brand-panel">
+                <div class="brand-top">
+                    <div class="logo-mark">
+                        <img src="/static/logo.png" alt="Galgotias logo">
+                    </div>
+                    <div>
+                        <strong>GIA</strong>
+                        <div class="brand-name">Galgotias Intelligent Assistant</div>
+                    </div>
+                </div>
+
+                <div class="brand-copy">
+                    <h1>Welcome to GIA</h1>
+                    <p>Your quick campus assistant for admissions, courses, fees, placements, hostel details, scholarships, and student services.</p>
+                    <div class="quick-topics" aria-label="Popular topics">
+                        <span class="topic-pill">Admissions</span>
+                        <span class="topic-pill">Courses</span>
+                        <span class="topic-pill">Fees</span>
+                        <span class="topic-pill">Placements</span>
+                        <span class="topic-pill">Hostel</span>
+                    </div>
+                </div>
+
+                <div class="brand-foot">
+                    <div class="stat">
+                        <strong>24/7</strong>
+                        <span>Assistant access</span>
+                    </div>
+                    <div class="stat">
+                        <strong>Fast</strong>
+                        <span>Campus answers</span>
+                    </div>
+                    <div class="stat">
+                        <strong>Easy</strong>
+                        <span>Student support</span>
+                    </div>
+                    <div class="developer-credit">
+                        © 2026 GIA • Developed by Chandan Kumar
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-panel">
+                <div class="form-card">
+                    <div class="eyebrow">Start a conversation</div>
+                    <h2>Tell GIA who you are.</h2>
+                    <p>Enter your details to open the chat and get help with common Galgotias University questions.</p>
+
+                    <div class="field">
+                        <label for="username">Full name</label>
+                        <input type="text" id="username" placeholder="Enter your name" autocomplete="name">
+                    </div>
+
+                    <div class="field">
+                        <label for="mobile">Contact number</label>
+                        <input
+                            type="tel"
+                            id="mobile"
+                            placeholder="Enter 10 digit contact number"
+                            autocomplete="tel"
+                            inputmode="numeric"
+                            maxlength="10"
+                            pattern="[0-9]{10}"
+                        >
+                    </div>
+
+                    <button class="primary-btn" onclick="startChat()">Start Chat</button>
+                    <p class="trust-note">Your details are only used to begin this chat session.</p>
+                    <a class="admin-shortcut" href="/admin">Admin Panel</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="chat-app" id="chatContainer" aria-live="polite">
+            <header class="chat-header">
+                <div class="chat-brand">
+                    <div class="logo-mark">
+                        <img src="/static/logo.png" alt="Galgotias logo">
+                    </div>
+                    <div class="chat-title">
+                        <h1>GIA</h1>
+                        <p class="tagline">Galgotias Intelligent Assistant</p>
+                    </div>
+                </div>
+                <div class="chat-actions">
+                    <div class="status">
+                        <span class="status-dot"></span>
+                        Online now
+                    </div>
+                    <button class="clear-btn" onclick="clearChat()">Clear Chat</button>
+                    <a class="admin-chat-link" href="/admin">Admin</a>
+                </div>
+            </header>
+
+            <div id="chatbox"></div>
+
+            <div class="composer">
+                <input type="text" id="userInput" placeholder="Ask about courses, fees, placements, hostel...">
+                <button class="send-btn" onclick="sendMessage()">Send</button>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        function startChat() {
+            const name = document.getElementById("username").value.trim();
+            const mobile = document.getElementById("mobile").value.trim();
+
+            if (name === "" || mobile === "") {
+                alert("Please enter your name and contact number.");
+                return;
+            }
+
+            if (!/^[0-9]{10}$/.test(mobile)) {
+                alert("Please enter a valid 10 digit contact number.");
+                return;
+            }
+
+            fetch("/save_user", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    name: name,
+                    mobile: mobile
+                })
+            });
+
+            document.getElementById("userForm").style.display = "none";
+            document.getElementById("chatContainer").style.display = "grid";
+            document.getElementById("userInput").focus();
+        }
+
+        function appendMessage(text, sender) {
+            const chatbox = document.getElementById("chatbox");
+            const row = document.createElement("div");
+            const bubble = document.createElement("div");
+
+            row.className = "message-row " + sender;
+            bubble.className = "message " + (sender === "user" ? "user-message" : "bot-message");
+            bubble.textContent = text;
+
+            row.appendChild(bubble);
+            chatbox.appendChild(row);
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }
+
+        function addWelcomeMessage() {
+            const chatbox = document.getElementById("chatbox");
+            const row = document.createElement("div");
+            const bubble = document.createElement("div");
+            const title = document.createElement("h2");
+            const intro = document.createElement("p");
+            const suggestions = document.createElement("div");
+            const topics = [
+                ["Admissions", "Tell me about admissions"],
+                ["Courses", "What courses are available?"],
+                ["Placements", "Tell me about placements"],
+                ["Hostel", "Hostel facilities"],
+                ["About University", "Tell me about Galgotias University"],
+                ["Location", "Where is Galgotias University located?"]
+            ];
+
+            row.className = "message-row bot";
+            bubble.className = "message bot-message welcome-message";
+            title.textContent = "Welcome to GIA";
+            intro.textContent = "You can ask about admissions, courses, fees, placements, hostel, scholarships, campus life, library, and sports.";
+            suggestions.className = "suggestions";
+
+            topics.forEach(function(topic) {
+                const button = document.createElement("button");
+                button.className = "suggestion";
+                button.textContent = topic[0];
+                button.addEventListener("click", function() {
+                    askSuggestion(topic[1]);
+                });
+                suggestions.appendChild(button);
+            });
+
+            bubble.appendChild(title);
+            bubble.appendChild(intro);
+            bubble.appendChild(suggestions);
+            row.appendChild(bubble);
+            chatbox.appendChild(row);
+        }
+
+        function clearChat() {
+            const chatbox = document.getElementById("chatbox");
+
+            chatbox.innerHTML = "";
+            document.getElementById("userInput").value = "";
+            addWelcomeMessage();
+            document.getElementById("userInput").focus();
+        }
+
+        function showTyping() {
+            const chatbox = document.getElementById("chatbox");
+            const row = document.createElement("div");
+            const bubble = document.createElement("div");
+            const typing = document.createElement("div");
+
+            row.className = "message-row bot";
+            row.id = "typing";
+            bubble.className = "message bot-message typing-message";
+            typing.className = "typing";
+            typing.innerHTML = `
+                <span class="typing-label">GIA is typing</span>
+                <span class="typing-dots" aria-hidden="true">
+                    <span class="typing-dot"></span>
+                    <span class="typing-dot"></span>
+                    <span class="typing-dot"></span>
+                </span>
+                <span class="typing-shimmer"></span>
+            `;
+
+            bubble.appendChild(typing);
+            row.appendChild(bubble);
+            chatbox.appendChild(row);
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }
+
+        function removeTyping() {
+            const typing = document.getElementById("typing");
+
+            if (typing) {
+                typing.remove();
+            }
+        }
+
+        function askSuggestion(message) {
+            const input = document.getElementById("userInput");
+            input.value = message;
+            sendMessage();
+        }
+
+        function sendMessage() {
+            const input = document.getElementById("userInput");
+            const msg = input.value.trim();
+
+            if (msg === "") {
+                return;
+            }
+
+            appendMessage(msg, "user");
+            input.value = "";
+            showTyping();
+
+            setTimeout(() => {
+                fetch("/get?msg=" + encodeURIComponent(msg))
+                    .then(response => response.text())
+                    .then(data => {
+                        removeTyping();
+                        appendMessage(data, "bot");
+                    })
+                    .catch(() => {
+                        removeTyping();
+                        appendMessage("Error connecting to chatbot.", "bot");
+                    });
+            }, 700);
+        }
+
+        document.getElementById("userInput").addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
+        });
+
+        document.getElementById("mobile").addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+                startChat();
+            }
+        });
+
+        document.getElementById("mobile").addEventListener("input", function(event) {
+            event.target.value = event.target.value.replace(/\D/g, "").slice(0, 10);
+        });
+
+        addWelcomeMessage();
+    </script>
+</body>
+</html>

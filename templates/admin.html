@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GIA Admin Panel</title>
+    <style>
+        :root {
+            --bg: #eef3fb;
+            --ink: #132238;
+            --muted: #68758a;
+            --line: #dbe4f0;
+            --panel: #ffffff;
+            --navy: #101d34;
+            --blue: #2463eb;
+            --green: #16a34a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f7faff 0%, #e8eef8 100%);
+            color: var(--ink);
+            font-family: Inter, "Segoe UI", Arial, sans-serif;
+            padding: 24px;
+        }
+
+        .admin-shell {
+            max-width: 1240px;
+            margin: 0 auto;
+        }
+
+        .topbar {
+            background: var(--navy);
+            border-radius: 8px;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 18px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .topbar h1 {
+            font-size: 30px;
+            margin-bottom: 6px;
+        }
+
+        .topbar p {
+            color: rgba(255, 255, 255, 0.72);
+        }
+
+        .top-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        a,
+        button {
+            border: 0;
+            border-radius: 8px;
+            background: var(--blue);
+            color: #fff;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 42px;
+            padding: 0 14px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .ghost-link {
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .message {
+            background: #eaf7ef;
+            border: 1px solid #bfe8cb;
+            border-radius: 8px;
+            color: #166534;
+            font-weight: 700;
+            margin-bottom: 18px;
+            padding: 12px 14px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        .stat-card,
+        .panel {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            box-shadow: 0 16px 38px rgba(16, 29, 52, 0.08);
+        }
+
+        .stat-card {
+            padding: 18px;
+        }
+
+        .stat-card span {
+            color: var(--muted);
+            display: block;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .stat-card strong {
+            font-size: 30px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+            gap: 18px;
+            margin-bottom: 18px;
+        }
+
+        .panel {
+            overflow: hidden;
+        }
+
+        .panel-header {
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 18px;
+        }
+
+        .panel-header h2 {
+            font-size: 20px;
+        }
+
+        .panel-body {
+            padding: 18px;
+        }
+
+        form {
+            display: grid;
+            gap: 12px;
+        }
+
+        label {
+            color: #27364d;
+            display: block;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 7px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            color: var(--ink);
+            font: inherit;
+            outline: none;
+            padding: 12px 13px;
+        }
+
+        textarea {
+            min-height: 96px;
+            resize: vertical;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 4px rgba(36, 99, 235, 0.12);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th,
+        td {
+            border-bottom: 1px solid var(--line);
+            padding: 12px 14px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background: #f5f8fc;
+            color: #42526a;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        td {
+            color: #1f2d44;
+        }
+
+        .table-wrap {
+            max-height: 420px;
+            overflow: auto;
+        }
+
+        .empty-state {
+            color: var(--muted);
+            padding: 18px;
+        }
+
+        .analytics-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .analytics-item {
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 11px 12px;
+        }
+
+        .analytics-item span {
+            color: var(--muted);
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        @media (max-width: 900px) {
+            body {
+                padding: 14px;
+            }
+
+            .topbar,
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 560px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="admin-shell">
+        <header class="topbar">
+            <div>
+                <h1>Admin Panel</h1>
+                <p>Monitor GIA visitors, queries, users, logs, and chatbot knowledge.</p>
+            </div>
+            <div class="top-actions">
+                <a class="ghost-link" href="/">Open Chatbot</a>
+                <a href="/admin/download_chat_logs">Download Chat Logs</a>
+                <a class="ghost-link" href="/admin/logout">Logout</a>
+            </div>
+        </header>
+
+        {% if message %}
+            <div class="message">{{ message }}</div>
+        {% endif %}
+
+        <section class="stats-grid" aria-label="Admin stats">
+            <div class="stat-card">
+                <span>Visitor Count</span>
+                <strong>{{ analytics.visitor_count }}</strong>
+            </div>
+            <div class="stat-card">
+                <span>Registered Users</span>
+                <strong>{{ analytics.user_count }}</strong>
+            </div>
+            <div class="stat-card">
+                <span>User Queries</span>
+                <strong>{{ analytics.query_count }}</strong>
+            </div>
+            <div class="stat-card">
+                <span>Tracked Intents</span>
+                <strong>{{ analytics.intent_count }}</strong>
+            </div>
+        </section>
+
+        <section class="dashboard-grid">
+            <div class="panel">
+                <div class="panel-header">
+                    <h2>Add New Q&A</h2>
+                </div>
+                <div class="panel-body">
+                    <form action="/admin/add_qa" method="post">
+                        <div>
+                            <label for="tag">Intent tag</label>
+                            <input id="tag" name="tag" placeholder="Example: admission" required>
+                        </div>
+                        <div>
+                            <label for="question">Question / pattern</label>
+                            <input id="question" name="question" placeholder="Example: admission helpline number" required>
+                        </div>
+                        <div>
+                            <label for="answer">Answer</label>
+                            <textarea id="answer" name="answer" placeholder="Write the chatbot answer..." required></textarea>
+                        </div>
+                        <button type="submit">Add Q&A and Retrain</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <h2>Analytics Dashboard</h2>
+                </div>
+                <div class="panel-body">
+                    <div class="analytics-list">
+                        {% for intent, count in analytics.top_intents %}
+                            <div class="analytics-item">
+                                <strong>{{ intent }}</strong>
+                                <span>{{ count }} queries</span>
+                            </div>
+                        {% else %}
+                            <p class="empty-state">No query analytics yet.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <h2>Recent Visitors</h2>
+                </div>
+                <div class="table-wrap">
+                    {% if users %}
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Contact</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in users %}
+                                    <tr>
+                                        <td>{{ user.Name }}</td>
+                                        <td>{{ user.Contact }}</td>
+                                        <td>{{ user.Date }}</td>
+                                        <td>{{ user.Time }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <p class="empty-state">No visitors saved yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <h2>Queries by Date</h2>
+                </div>
+                <div class="panel-body">
+                    <div class="analytics-list">
+                        {% for date, count in analytics.daily_queries %}
+                            <div class="analytics-item">
+                                <strong>{{ date }}</strong>
+                                <span>{{ count }} queries</span>
+                            </div>
+                        {% else %}
+                            <p class="empty-state">No daily data yet.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel full-width">
+                <div class="panel-header">
+                    <h2>View User Queries</h2>
+                    <a href="/admin/download_chat_logs">Download Chat Logs</a>
+                </div>
+                <div class="table-wrap">
+                    {% if logs %}
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Question</th>
+                                    <th>Response</th>
+                                    <th>Intent</th>
+                                    <th>Confidence</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for log in logs %}
+                                    <tr>
+                                        <td>{{ log.Question }}</td>
+                                        <td>{{ log.Response }}</td>
+                                        <td>{{ log.Intent }}</td>
+                                        <td>{{ log.Confidence }}</td>
+                                        <td>{{ log.Date }}</td>
+                                        <td>{{ log.Time }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <p class="empty-state">No chat logs yet. Ask the bot a question to create the first log.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
