@@ -101,7 +101,7 @@ def build_analytics(users, logs):
 
 
 def add_question_answer(tag, question, answer):
-    global data, model, vectorizer
+   # global data, model, vectorizer
 
     tag = tag.strip().lower().replace(" ", "_")
     question = question.strip()
@@ -129,7 +129,7 @@ def add_question_answer(tag, question, answer):
     with open(INTENTS_FILE, "w", encoding="utf-8") as file:
         json.dump(data, file, indent=2, ensure_ascii=False)
 
-    model, vectorizer = train_model()
+   # model, vectorizer = train_model()
     data = load_intents()
     return True
 
